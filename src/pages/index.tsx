@@ -1,7 +1,9 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
 import { cn } from "~/utils/cn";
+import { Github } from "lucide-react";
 
 const ProjectPreview: React.FC<{
   name: string;
@@ -72,7 +74,17 @@ const Home: NextPage = () => {
         />
       </div>
 
-      <footer className="mt-32 text-gray-400">Piotr Pilszczek</footer>
+      <footer className="mt-32 flex h-5 items-center gap-4 text-gray-400">
+        <span>Piotr Pilszczek</span>
+        <Separator orientation="vertical" />
+        <Link
+          href={"https://github.com/PeterPkp123/scholarship-hub"}
+          className="flex items-center gap-2 transition-colors hover:text-gray-600"
+        >
+          <Github size={16} />
+          <span>GitHub</span>
+        </Link>
+      </footer>
     </div>
   );
 };
