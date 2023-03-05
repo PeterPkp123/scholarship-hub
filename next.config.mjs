@@ -9,13 +9,16 @@
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-
-  /**
-   * If you have the "experimental: { appDir: true }" setting enabled, then you
-   * must comment the below `i18n` config out.
-   *
-   * @see https://github.com/vercel/next.js/issues/41980
-   */
+  experimental: {
+    fontLoaders: [
+      {
+        loader: "@next/font/google",
+        options: {
+          subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+        },
+      },
+    ],
+  },
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
