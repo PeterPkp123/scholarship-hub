@@ -154,7 +154,7 @@ const Index: NextPage = () => {
                 key={word.id}
                 className="flex w-full cursor-pointer items-center justify-between gap-4 rounded-md p-4 shadow-md transition-shadow hover:shadow-lg"
               >
-                <div>
+                <div className="w-full">
                   <Dialog>
                     <DialogTrigger asChild>
                       <button className="flex w-full flex-col items-start outline-none">
