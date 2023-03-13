@@ -26,7 +26,7 @@ const ProjectPreview: React.FC<{
       <p>{description}</p>
       <Link href={to}>
         <Button className="mt-8">
-          {subject !== "English" ? "Przejdź" : "Enter"}
+          {subject !== "English" ? "Przejdź do strony" : "Enter the page"}
         </Button>
       </Link>
     </div>

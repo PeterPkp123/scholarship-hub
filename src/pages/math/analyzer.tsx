@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import AppLayout from "~/components/app-layout";
 
 const Analyzer: NextPage = () => {

@@ -10,8 +10,15 @@
     "start": "next start"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.11",
     "@prisma/client": "^4.9.0",
+    "@radix-ui/react-alert-dialog": "^1.0.3",
+    "@radix-ui/react-dialog": "^1.0.3",
+    "@radix-ui/react-label": "^2.0.1",
+    "@radix-ui/react-scroll-area": "^1.0.3",
     "@radix-ui/react-separator": "^1.0.1",
+    "@radix-ui/react-toast": "^1.1.3",
+    "@radix-ui/react-tooltip": "^1.0.5",
     "@tanstack/react-query": "^4.20.2",
     "@trpc/client": "^10.9.0",
     "@trpc/next": "^10.9.0",
@@ -23,10 +30,11 @@
     "next": "^13.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.5",
     "superjson": "1.9.1",
     "tailwind-merge": "^1.10.0",
     "tailwindcss-animate": "^1.0.5",
-    "zod": "^3.20.6"
+    "zod": "^3.21.0"
   },
   "devDependencies": {
     "@types/eslint": "^8.21.1",

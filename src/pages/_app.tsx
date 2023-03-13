@@ -3,12 +3,21 @@ import { api } from "~/utils/api";
 import { Inter as FontSans } from "next/font/google";
 import "~/styles/globals.css";
 import Head from "next/head";
+import { Toaster } from "~/components/ui/toast";
 
 const font = FontSans({ variable: "--font-sans" });
 
 const App: AppType = ({ Component, pageProps }) => {
   return (
     <>
+      <style jsx global>
+        {`
+          :root {
+            --font-sans: ${font.style.fontFamily};
+          }
+        `}
+      </style>
+
       <Head>
         <title>Scholarship Hub</title>
         <meta
@@ -23,6 +32,8 @@ const App: AppType = ({ Component, pageProps }) => {
       <div className={`${font.className} ${font.variable}`}>
         <Component {...pageProps} />
       </div>
+
+      <Toaster />
     </>
   );
 };

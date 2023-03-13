@@ -8,6 +8,71 @@ datasource db {
     relationMode = "prisma"
 }
 
-model Example {
+model Word {
     id String @id @default(cuid())
+
+    content String @unique
+
+    meanings  Meaning[]
+    vocabSets VocabSet[]
+    phonetics Phonetic[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Phonetic {
+    id String @id @default(cuid())
+
+    content  String
+    audioUrl String
+
+    word   Word   @relation(fields: [wordId], references: [id], onDelete: Cascade)
+    wordId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([wordId])
+}
+
+model Meaning {
+    id String @id @default(cuid())
+
+    partOfSpeech String
+
+    word   Word   @relation(fields: [wordId], references: [id], onDelete: Cascade)
+    wordId String
+
+    definitions Definition[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([wordId])
+}
+
+model Definition {
+    id String @id @default(cuid())
+
+    content String
+
+    meaning   Meaning @relation(fields: [meaningId], references: [id], onDelete: Cascade)
+    meaningId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([meaningId])
+}
+
+model VocabSet {
+    id String @id @default(cuid())
+
+    name String
+
+    words Word[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
