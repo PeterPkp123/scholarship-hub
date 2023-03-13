@@ -161,11 +161,23 @@ const Index: NextPage = () => {
                         <h4 className="my-0">{word.content}</h4>
 
                         <div className="flex flex-wrap items-center gap-x-3">
-                          {word.phonetics.map((phonetic) => (
-                            <span className="text-gray-500" key={phonetic.id}>
-                              {phonetic.content}
+                          {word.phonetics.filter((p) => !!p.content).length >
+                          0 ? (
+                            word.phonetics
+                              .filter((p) => !!p.content)
+                              .map((phonetic) => (
+                                <span
+                                  className="text-gray-500"
+                                  key={phonetic.id}
+                                >
+                                  {phonetic.content}
+                                </span>
+                              ))
+                          ) : (
+                            <span className="text-gray-400">
+                              Click to see more
                             </span>
-                          ))}
+                          )}
                         </div>
                       </button>
                     </DialogTrigger>
@@ -174,27 +186,36 @@ const Index: NextPage = () => {
                         <h2 className="!my-0">{word.content}</h2>
                       </DialogHeader>
 
-                      <h4>Phonetics</h4>
-                      <div className="flex flex-wrap items-center gap-x-3">
-                        {word.phonetics.map((phonetic) => (
-                          <span className="text-gray-500" key={phonetic.id}>
-                            {phonetic.content}
-                          </span>
-                        ))}
-                      </div>
-                      {word.phonetics.find((p) => !!p.audioUrl) && (
-                        <span
-                          className="flex cursor-pointer items-center gap-2 transition-colors hover:text-gray-600"
-                          onClick={async () => {
-                            await play(
-                              word.phonetics.find((p) => !!p.audioUrl)
-                                ?.audioUrl ?? ""
-                            );
-                          }}
-                        >
-                          <Volume2 className="h-5 w-5 flex-shrink-0" />
-                          Listen to the recording
-                        </span>
+                      {word.phonetics.filter((p) => !!p.content).length > 0 && (
+                        <>
+                          <h4>Phonetics</h4>
+                          <div className="flex flex-wrap items-center gap-x-3">
+                            {word.phonetics
+                              .filter((p) => !!p.content)
+                              .map((phonetic) => (
+                                <span
+                                  className="text-gray-500"
+                                  key={phonetic.id}
+                                >
+                                  {phonetic.content}
+                                </span>
+                              ))}
+                          </div>
+                          {word.phonetics.find((p) => !!p.audioUrl) && (
+                            <span
+                              className="flex cursor-pointer items-center gap-2 transition-colors hover:text-gray-600"
+                              onClick={async () => {
+                                await play(
+                                  word.phonetics.find((p) => !!p.audioUrl)
+                                    ?.audioUrl ?? ""
+                                );
+                              }}
+                            >
+                              <Volume2 className="h-5 w-5 flex-shrink-0" />
+                              Listen to the recording
+                            </span>
+                          )}
+                        </>
                       )}
 
                       <h4>Definitions</h4>

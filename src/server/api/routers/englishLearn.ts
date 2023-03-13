@@ -144,7 +144,7 @@ export const englishLearnRouter = createTRPCRouter({
           phonetics: {
             createMany: {
               data: word.phonetics.map((phonetic) => ({
-                content: phonetic.text,
+                content: phonetic.text || "",
                 audioUrl: phonetic.audio,
               })),
             },

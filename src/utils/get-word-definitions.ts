@@ -8,10 +8,9 @@ export const getWord = async (word: string) => {
   const responseSchema = z.array(
     z.object({
       word: z.string(),
-      phonetic: z.string(),
       phonetics: z.array(
         z.object({
-          text: z.string(),
+          text: z.string().optional(),
           audio: z.string(),
         })
       ),
