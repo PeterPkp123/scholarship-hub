@@ -97,13 +97,28 @@ const Index: NextPage = () => {
       description="Learn words in this set!"
       actions={
         <>
-          <Button
-            onClick={async () => {
-              await router.push(`/english/learn/${setId || ""}/practice`);
-            }}
-          >
-            Practice set
-          </Button>
+          {data.words.length > 0 ? (
+            <Button
+              onClick={async () => {
+                await router.push(`/english/learn/${setId || ""}/practice`);
+              }}
+            >
+              Practice set
+            </Button>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button disabled>Practice set</Button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  You can&apos;t practice a set without any words.
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </>
       }
     >
@@ -133,17 +148,33 @@ const Index: NextPage = () => {
 
         <h2 className="mt-16">List of the words</h2>
         <div className="mt-4 flex flex-col gap-4">
-          {data.words.map((word) => (
-            <div
-              key={word.id}
-              className="flex w-full cursor-pointer items-center justify-between gap-4 rounded-md p-4 shadow-md transition-shadow hover:shadow-lg"
-            >
-              <div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="flex w-full flex-col items-start outline-none">
-                      <h4 className="my-0">{word.content}</h4>
+          {data.words.length > 0 ? (
+            data.words.map((word) => (
+              <div
+                key={word.id}
+                className="flex w-full cursor-pointer items-center justify-between gap-4 rounded-md p-4 shadow-md transition-shadow hover:shadow-lg"
+              >
+                <div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button className="flex w-full flex-col items-start outline-none">
+                        <h4 className="my-0">{word.content}</h4>
 
+                        <div className="flex flex-wrap items-center gap-x-3">
+                          {word.phonetics.map((phonetic) => (
+                            <span className="text-gray-500" key={phonetic.id}>
+                              {phonetic.content}
+                            </span>
+                          ))}
+                        </div>
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent big>
+                      <DialogHeader>
+                        <h2 className="!my-0">{word.content}</h2>
+                      </DialogHeader>
+
+                      <h4>Phonetics</h4>
                       <div className="flex flex-wrap items-center gap-x-3">
                         {word.phonetics.map((phonetic) => (
                           <span className="text-gray-500" key={phonetic.id}>
@@ -151,105 +182,93 @@ const Index: NextPage = () => {
                           </span>
                         ))}
                       </div>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent big>
-                    <DialogHeader>
-                      <h2 className="!my-0">{word.content}</h2>
-                    </DialogHeader>
-
-                    <h4>Phonetics</h4>
-                    <div className="flex flex-wrap items-center gap-x-3">
-                      {word.phonetics.map((phonetic) => (
-                        <span className="text-gray-500" key={phonetic.id}>
-                          {phonetic.content}
+                      {word.phonetics.find((p) => !!p.audioUrl) && (
+                        <span
+                          className="flex cursor-pointer items-center gap-2 transition-colors hover:text-gray-600"
+                          onClick={async () => {
+                            await play(
+                              word.phonetics.find((p) => !!p.audioUrl)
+                                ?.audioUrl ?? ""
+                            );
+                          }}
+                        >
+                          <Volume2 className="h-5 w-5 flex-shrink-0" />
+                          Listen to the recording
                         </span>
-                      ))}
-                    </div>
-                    {word.phonetics.find((p) => !!p.audioUrl) && (
-                      <span
-                        className="flex cursor-pointer items-center gap-2 transition-colors hover:text-gray-600"
-                        onClick={async () => {
-                          await play(
-                            word.phonetics.find((p) => !!p.audioUrl)
-                              ?.audioUrl ?? ""
-                          );
-                        }}
-                      >
-                        <Volume2 className="h-5 w-5 flex-shrink-0" />
-                        Listen to the recording
-                      </span>
-                    )}
+                      )}
 
-                    <h4>Definitions</h4>
-                    <ScrollArea className="max-h-[50vh] w-full rounded-md border p-4">
-                      <div className="flex flex-col gap-6">
-                        {word.meanings.map((meaning) => (
-                          <div key={meaning.id}>
-                            <h5 className="font-bold">
-                              {meaning.partOfSpeech}
-                            </h5>
+                      <h4>Definitions</h4>
+                      <ScrollArea className="max-h-[50vh] w-full rounded-md border p-4">
+                        <div className="flex flex-col gap-6">
+                          {word.meanings.map((meaning) => (
+                            <div key={meaning.id}>
+                              <h5 className="font-bold">
+                                {meaning.partOfSpeech}
+                              </h5>
 
-                            <ul className="my-0 flex list-disc flex-col">
-                              {meaning.definitions.map((definition) => (
-                                <li key={definition.id}>
-                                  {definition.content}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                              <ul className="my-0 flex list-disc flex-col">
+                                {meaning.definitions.map((definition) => (
+                                  <li key={definition.id}>
+                                    {definition.content}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button className="h-12 w-12" variant={"outline"}>
+                                <Trash2 className="h-5 w-5" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Delete this word</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
-                    </ScrollArea>
-                  </DialogContent>
-                </Dialog>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. You&apos;ll have to add
+                          this word again.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <Button
+                          language="en"
+                          loading={isDeletingWord}
+                          onClick={async () => {
+                            try {
+                              await deleteWord({
+                                setId: setId || "",
+                                wordId: word.id,
+                              });
+                            } catch (e) {}
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
-              <div>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <div>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button className="h-12 w-12" variant={"outline"}>
-                              <Trash2 className="h-5 w-5" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Delete this word</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. You&apos;ll have to add
-                        this word again.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <Button
-                        language="en"
-                        loading={isDeletingWord}
-                        onClick={async () => {
-                          try {
-                            await deleteWord({
-                              setId: setId || "",
-                              wordId: word.id,
-                            });
-                          } catch (e) {}
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="text-xl">Add new words to this set!</div>
+          )}
         </div>
       </div>
     </AppLayout>

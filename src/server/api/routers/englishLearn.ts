@@ -212,4 +212,19 @@ export const englishLearnRouter = createTRPCRouter({
         word: word.content,
       };
     }),
+  deleteSet: publicProcedure
+    .input(z.object({ setId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const set = await ctx.prisma.vocabSet.findUnique({
+        where: { id: input.setId },
+      });
+
+      if (!set) {
+        throw new ApiError("This set does not exist", "setId");
+      }
+
+      await ctx.prisma.vocabSet.delete({
+        where: { id: input.setId },
+      });
+    }),
 });
