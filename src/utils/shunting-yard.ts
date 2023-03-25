@@ -363,7 +363,7 @@ const calculateRPN = (rpn: Token[], variableValue: number) => {
   return stack.pop()!;
 };
 
-const rangeWithDecimals = (start: number, end: number, step = 0.1) => {
+const rangeWithDecimals = (start: number, end: number, step = 0.03) => {
   const range = [];
 
   for (let i = start; i <= end; i += step) {
