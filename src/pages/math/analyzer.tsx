@@ -73,7 +73,7 @@ const Analyzer: NextPage = () => {
             setValueResult(result.valueResult);
 
             setChartData({
-              labels: result.plotValues.map((v) => v.x),
+              labels: result.plotValues.map((v) => Math.floor(v.x)),
               datasets: [
                 {
                   label: "f(x)",
@@ -134,7 +134,7 @@ const Analyzer: NextPage = () => {
       </div>
 
       <div className="mt-12">
-        <Line datasetIdKey="id" data={chartData} />
+        <Line datasetIdKey="id" data={chartData} width="100%" height="30px" />
       </div>
     </AppLayout>
   );

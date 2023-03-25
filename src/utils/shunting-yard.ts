@@ -4,8 +4,7 @@ enum FunctionType {
   SquareRoot = "sqrt",
   Sin = "sin",
   Cos = "cos",
-  Tan = "tan",
-  Cot = "cot",
+  Ln = "ln",
 }
 
 enum OperatorType {
@@ -72,8 +71,7 @@ const SUPPORTED_FUNCTIONS = [
   FunctionType.SquareRoot,
   FunctionType.Sin,
   FunctionType.Cos,
-  FunctionType.Tan,
-  FunctionType.Cot,
+  FunctionType.Ln,
 ];
 
 const getOperator = (type: OperatorType) => {
@@ -329,9 +327,8 @@ const calculateRPN = (rpn: Token[], variableValue: number) => {
           case FunctionType.Cos:
             stack.push(Math.cos(stack.pop()!));
             break;
-          case FunctionType.Tan:
-            stack.push(Math.tan(stack.pop()!));
-            break;
+          case FunctionType.Ln:
+            stack.push(Math.log(stack.pop()!));
         }
 
         break;
@@ -366,6 +363,20 @@ const calculateRPN = (rpn: Token[], variableValue: number) => {
   return stack.pop()!;
 };
 
+function rangeWithDecimals(
+  start: number,
+  end: number,
+  step: number = 0.1
+): number[] {
+  const range = [];
+
+  for (let i = start; i <= end; i += step) {
+    range.push(i);
+  }
+
+  return range;
+}
+
 const range = (size: number, startAt = 0) =>
   [...Array(size).keys()].map((i) => i + startAt);
 
@@ -378,7 +389,7 @@ export const getShuntingResponse = (input: string, variableValue?: number) => {
     ),
     valueResult:
       variableValue !== undefined ? calculateRPN(result, variableValue) : null,
-    plotValues: range(200, -100).map((x) => ({
+    plotValues: rangeWithDecimals(-100, 100).map((x) => ({
       x,
       y: calculateRPN(result, x),
     })),
