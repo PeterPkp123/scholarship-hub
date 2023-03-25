@@ -366,6 +366,9 @@ const calculateRPN = (rpn: Token[], variableValue: number) => {
   return stack.pop()!;
 };
 
+const range = (size: number, startAt = 0) =>
+  [...Array(size).keys()].map((i) => i + startAt);
+
 export const getShuntingResponse = (input: string, variableValue?: number) => {
   const result = applyShuntingYard(input);
 
@@ -375,5 +378,9 @@ export const getShuntingResponse = (input: string, variableValue?: number) => {
     ),
     valueResult:
       variableValue !== undefined ? calculateRPN(result, variableValue) : null,
+    plotValues: range(200, -100).map((x) => ({
+      x,
+      y: calculateRPN(result, x),
+    })),
   };
 };

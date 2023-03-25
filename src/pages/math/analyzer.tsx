@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AppLayout from "~/components/app-layout";
@@ -8,6 +8,17 @@ import { Label } from "~/components/label";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { api, type RouterInputs } from "~/utils/api";
+import { Line } from "react-chartjs-2";
+import {
+  ChartData,
+  CategoryScale,
+  Chart,
+  LinearScale,
+  PointElement,
+  LineElement,
+} from "chart.js";
+
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 export const processEquationSchema = z.object({
   equation: z.string().min(1),
@@ -33,6 +44,12 @@ const Analyzer: NextPage = () => {
   const [showValueResult, setShowValueResult] = useState(false);
   const [reversedPolishNotation, setReversedPolishNotation] = useState("");
   const [valueResult, setValueResult] = useState<number | null>(null);
+  const [chartData, setChartData] = useState<
+    ChartData<"line", number[], number>
+  >({
+    labels: [],
+    datasets: [],
+  });
 
   const variableValue = watch("variableValue");
 
@@ -51,8 +68,19 @@ const Analyzer: NextPage = () => {
         onSubmit={handleSubmit(async (data) => {
           try {
             const result = await mutateAsync(data);
+
             setReversedPolishNotation(result.reversedPolishNotation.join(" "));
             setValueResult(result.valueResult);
+
+            setChartData({
+              labels: result.plotValues.map((v) => v.x),
+              datasets: [
+                {
+                  label: "f(x)",
+                  data: result.plotValues.map((v) => v.y),
+                },
+              ],
+            });
           } catch (e) {}
         })}
       >
@@ -103,6 +131,10 @@ const Analyzer: NextPage = () => {
         ) : (
           <span className="text-gray-500">czekam na wzór...</span>
         )}
+      </div>
+
+      <div className="mt-12">
+        <Line datasetIdKey="id" data={chartData} />
       </div>
     </AppLayout>
   );
