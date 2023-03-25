@@ -363,11 +363,7 @@ const calculateRPN = (rpn: Token[], variableValue: number) => {
   return stack.pop()!;
 };
 
-function rangeWithDecimals(
-  start: number,
-  end: number,
-  step: number = 0.1
-): number[] {
+const rangeWithDecimals = (start: number, end: number, step = 0.1) => {
   const range = [];
 
   for (let i = start; i <= end; i += step) {
@@ -375,10 +371,7 @@ function rangeWithDecimals(
   }
 
   return range;
-}
-
-const range = (size: number, startAt = 0) =>
-  [...Array(size).keys()].map((i) => i + startAt);
+};
 
 export const getShuntingResponse = (input: string, variableValue?: number) => {
   const result = applyShuntingYard(input);
