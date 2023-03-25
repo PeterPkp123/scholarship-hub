@@ -310,6 +310,8 @@ const calculateRPN = (rpn: Token[], variableValue: number) => {
             stack.push(variableValue);
           } else if (token.value === "PI") {
             stack.push(Math.PI);
+          } else if (token.value === "e") {
+            stack.push(Math.E);
           } else {
             throw new ApiError("Zmienna musi być nazwana 'x'", "equation");
           }
@@ -359,7 +361,6 @@ const calculateRPN = (rpn: Token[], variableValue: number) => {
       default:
         break;
     }
-    console.log(stack);
   });
 
   return stack.pop()!;
