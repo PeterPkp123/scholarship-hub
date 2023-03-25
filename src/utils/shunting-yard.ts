@@ -38,7 +38,7 @@ type Parenthesis = {
   type: ParenthesisType;
 };
 
-type Function = {
+type FunctionObj = {
   type: FunctionType;
 };
 
@@ -49,7 +49,7 @@ type Token =
     }
   | {
       type: TokenType.Function;
-      value: Function;
+      value: FunctionObj;
     }
   | {
       type: TokenType.Operator;
