@@ -2,6 +2,10 @@ import { ApiError } from "~/server/api/errors/api-error";
 
 enum FunctionType {
   SquareRoot = "sqrt",
+  Sin = "sin",
+  Cos = "cos",
+  Tan = "tan",
+  Cot = "cot",
 }
 
 enum OperatorType {
@@ -64,7 +68,13 @@ const SUPPORTED_OPERATORS = [
   OperatorType.Power,
 ];
 
-const SUPPORTED_FUNCTIONS = [FunctionType.SquareRoot];
+const SUPPORTED_FUNCTIONS = [
+  FunctionType.SquareRoot,
+  FunctionType.Sin,
+  FunctionType.Cos,
+  FunctionType.Tan,
+  FunctionType.Cot,
+];
 
 const getOperator = (type: OperatorType) => {
   switch (type) {
@@ -164,7 +174,7 @@ const tokenize = (input: string): Token[] => {
   return tokens;
 };
 
-export const applyShuntingYard = (input: string) => {
+const applyShuntingYard = (input: string) => {
   const inputWithoutSpaces = input.replace(/\s/g, "");
 
   const tokens = tokenize(inputWithoutSpaces);
@@ -244,7 +254,7 @@ export const applyShuntingYard = (input: string) => {
             ).type !== ParenthesisType.Left
           ) {
             throw new ApiError(
-              "There was an error while parsing the equation (parenthesis mismatch 1)",
+              "There was an error while parsing the equation (parenthesis mismatch)",
               "equation"
             );
           }
@@ -276,7 +286,7 @@ export const applyShuntingYard = (input: string) => {
       )
     ) {
       throw new ApiError(
-        "There was an error while parsing the equation (parenthesis mismatch 2)",
+        "There was an error while parsing the equation (parenthesis mismatch)",
         "equation"
       );
     }
@@ -284,6 +294,85 @@ export const applyShuntingYard = (input: string) => {
     reversedPolishNotation.push(operatorStack.pop()!);
   }
 
-  console.log(reversedPolishNotation);
   return reversedPolishNotation;
+};
+
+const calculateRPN = (rpn: Token[], variableValue: number) => {
+  const stack: number[] = [];
+
+  rpn.forEach((token) => {
+    switch (token.type) {
+      case TokenType.Number:
+        if (typeof token.value === "number") {
+          stack.push(token.value);
+        } else {
+          if (token.value === "x") {
+            stack.push(variableValue);
+          } else if (token.value === "PI") {
+            stack.push(Math.PI);
+          } else {
+            throw new ApiError("Zmienna musi być nazwana 'x'", "equation");
+          }
+        }
+
+        break;
+      case TokenType.Function:
+        switch (token.value.type) {
+          case FunctionType.SquareRoot:
+            stack.push(Math.sqrt(stack.pop()!));
+            break;
+          case FunctionType.Sin:
+            stack.push(Math.sin(stack.pop()!));
+            break;
+          case FunctionType.Cos:
+            stack.push(Math.cos(stack.pop()!));
+            break;
+          case FunctionType.Tan:
+            stack.push(Math.tan(stack.pop()!));
+            break;
+        }
+
+        break;
+      case TokenType.Operator:
+        const secondOperand = stack.pop()!;
+        const firstOperand = stack.pop()!;
+
+        switch (token.value.type) {
+          case OperatorType.Plus:
+            stack.push(firstOperand + secondOperand);
+            break;
+          case OperatorType.Minus:
+            stack.push(firstOperand - secondOperand);
+            break;
+          case OperatorType.Multiply:
+            stack.push(firstOperand * secondOperand);
+            break;
+          case OperatorType.Divide:
+            stack.push(firstOperand / secondOperand);
+            break;
+          case OperatorType.Power:
+            stack.push(Math.pow(firstOperand, secondOperand));
+            break;
+        }
+
+        break;
+      default:
+        break;
+    }
+    console.log(stack);
+  });
+
+  return stack.pop()!;
+};
+
+export const getShuntingResponse = (input: string, variableValue?: number) => {
+  const result = applyShuntingYard(input);
+
+  return {
+    reversedPolishNotation: result.map((token) =>
+      token.type === TokenType.Number ? token.value : token.value.type
+    ),
+    valueResult:
+      variableValue !== undefined ? calculateRPN(result, variableValue) : null,
+  };
 };

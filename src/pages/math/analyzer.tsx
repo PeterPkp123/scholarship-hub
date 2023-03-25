@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type NextPage } from "next";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AppLayout from "~/components/app-layout";
@@ -8,7 +9,10 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { api, RouterInputs } from "~/utils/api";
 
-export const processEquationSchema = z.object({ equation: z.string().min(1) });
+export const processEquationSchema = z.object({
+  equation: z.string().min(1),
+  variableValue: z.number().optional(),
+});
 
 const Analyzer: NextPage = () => {
   const {
@@ -20,10 +24,23 @@ const Analyzer: NextPage = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors: formErrors },
   } = useForm<RouterInputs["mathAnalyzer"]["processEquation"]>({
     resolver: zodResolver(processEquationSchema),
   });
+
+  const [showValueResult, setShowValueResult] = useState(false);
+  const [reversedPolishNotation, setReversedPolishNotation] = useState("");
+  const [valueResult, setValueResult] = useState<number | null>(null);
+
+  const variableValue = watch("variableValue");
+
+  useEffect(() => {
+    setShowValueResult(
+      variableValue !== undefined && !isNaN(Number(variableValue))
+    );
+  }, [variableValue]);
 
   return (
     <AppLayout
@@ -34,17 +51,28 @@ const Analyzer: NextPage = () => {
         onSubmit={handleSubmit(async (data) => {
           try {
             const result = await mutateAsync(data);
-            console.log(result);
+            setReversedPolishNotation(result.reversedPolishNotation.join(" "));
+            setValueResult(result.valueResult);
           } catch (e) {}
         })}
       >
         <div className="grid w-full items-center gap-3">
           <Label>Równanie funkcji</Label>
           <div className="flex w-full items-center gap-4">
+            <span className="min-w-fit">f(x) =</span>
             <Input
               {...register("equation")}
               placeholder="Wprowadź równanie..."
               autoFocus
+            />
+            <Input
+              {...register("variableValue", {
+                valueAsNumber: true,
+              })}
+              type="number"
+              defaultValue={0}
+              className="w-24"
+              placeholder="x = ?"
             />
             <Button
               loading={isProcessingEquation}
@@ -61,6 +89,19 @@ const Analyzer: NextPage = () => {
           </p>
         </div>
       </form>
+
+      {showValueResult && valueResult !== null && (
+        <div className="mt-12 text-2xl">Wynik: {valueResult}</div>
+      )}
+
+      <div className="mt-12 text-2xl">
+        RPN:{" "}
+        {reversedPolishNotation ? (
+          <span className="font-mono font-bold">{reversedPolishNotation}</span>
+        ) : (
+          <span className="text-gray-500">czekam na wzór...</span>
+        )}
+      </div>
     </AppLayout>
   );
 };
