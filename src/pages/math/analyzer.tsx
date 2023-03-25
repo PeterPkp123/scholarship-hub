@@ -7,7 +7,7 @@ import AppLayout from "~/components/app-layout";
 import { Label } from "~/components/label";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { api, RouterInputs } from "~/utils/api";
+import { api, type RouterInputs } from "~/utils/api";
 
 export const processEquationSchema = z.object({
   equation: z.string().min(1),
