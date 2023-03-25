@@ -91,7 +91,9 @@ const Analyzer: NextPage = () => {
       </form>
 
       {showValueResult && valueResult !== null && (
-        <div className="mt-12 text-2xl">Wynik: {valueResult}</div>
+        <div className="mt-12 text-2xl">
+          Wynik: {valueResult.toFixed(2).replace(/[.,]00$/, "")}
+        </div>
       )}
 
       <div className="mt-12 text-2xl">
