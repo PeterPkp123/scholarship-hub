@@ -114,6 +114,7 @@ const tokenize = (input: string): Token[] => {
 
   const stringParts: string[] = [];
   let stringPart = "";
+  let lastWasOp = true;
 
   input.split("").forEach((char) => {
     if (
@@ -127,10 +128,18 @@ const tokenize = (input: string): Token[] => {
         stringParts.push(stringPart);
       }
 
-      stringParts.push(char);
-      stringPart = "";
+      if (char === OperatorType.Minus && lastWasOp) {
+        stringParts.push("-1");
+        stringParts.push(OperatorType.Multiply);
+      } else {
+        stringParts.push(char);
+        stringPart = "";
+      }
+
+      lastWasOp = true;
     } else {
       stringPart += char;
+      lastWasOp = false;
     }
   });
 
