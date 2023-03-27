@@ -130,7 +130,7 @@ const tokenize = (input: string): Token[] => {
 
       if (char === OperatorType.Minus && lastWasOp) {
         stringParts.push("-1");
-        stringParts.push("*");
+        stringParts.push(OperatorType.Multiply);
       } else {
         stringParts.push(char);
         stringPart = "";
