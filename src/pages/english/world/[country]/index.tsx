@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import AppLayout from "~/components/app-layout";
-import { COUNTRIES, Country, CountryCode } from "..";
+import { COUNTRIES, type Country, type CountryCode } from "..";
 
 const useCountry = (): Country => {
   const router = useRouter();

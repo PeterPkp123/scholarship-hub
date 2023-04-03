@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type NextPage } from "next";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import AppLayout from "~/components/app-layout";
@@ -10,7 +10,7 @@ import { Input } from "~/components/ui/input";
 import { api, type RouterInputs } from "~/utils/api";
 import { Line } from "react-chartjs-2";
 import {
-  ChartData,
+  type ChartData,
   CategoryScale,
   Chart,
   LinearScale,

@@ -105,6 +105,7 @@ const Index: NextPage = () => {
       <div className="grid grid-cols-2 gap-4">
         {COUNTRIES.map((country) => (
           <Link
+            key={country.code}
             href={`/english/world/${country.code}`}
             className="flex w-full cursor-pointer items-center gap-8 rounded-md border border-gray-200 transition-shadow hover:shadow-md"
           >

@@ -122,7 +122,7 @@ const tokenize = (input: string): Token[] => {
         ...SUPPORTED_OPERATORS,
         ParenthesisType.Left,
         ParenthesisType.Right,
-      ].includes(char as any)
+      ].includes(char)
     ) {
       if (stringPart) {
         stringParts.push(stringPart);
@@ -148,7 +148,7 @@ const tokenize = (input: string): Token[] => {
   }
 
   stringParts.forEach((part) => {
-    if (SUPPORTED_OPERATORS.includes(part as any)) {
+    if (SUPPORTED_OPERATORS.includes(part)) {
       tokens.push({
         type: TokenType.Operator,
         value: getOperator(part as OperatorType),
@@ -163,7 +163,7 @@ const tokenize = (input: string): Token[] => {
           type: part as ParenthesisType,
         },
       });
-    } else if (SUPPORTED_FUNCTIONS.includes(part as any)) {
+    } else if (SUPPORTED_FUNCTIONS.includes(part)) {
       tokens.push({
         type: TokenType.Function,
         value: {
