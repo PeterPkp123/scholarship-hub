@@ -5,7 +5,7 @@ const Country: React.FC = () => {
     <>
       <p className="text-lg text-gray-500">
         Welcome to the land down under, the beautiful country of Australia!
-        Australia is the world's largest island and the smallest continent,
+        Australia is the world&apos;s largest island and the smallest continent,
         situated in the southern hemisphere, between the Pacific and Indian
         Oceans. This vast and diverse country is comprised of six states and two
         territories, each with its unique landscapes, climate, and culture. The

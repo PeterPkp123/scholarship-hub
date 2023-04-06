@@ -11,8 +11,8 @@ const Country: React.FC = () => {
         the south and Malaysia to the north. Singapore is made up of one main
         island and 63 surrounding ones, and has a total land area of just 728.6
         square kilometers. Despite its small size, Singapore is one of the
-        world's most prosperous countries, with a thriving economy and a high
-        standard of living.
+        world&apos;s most prosperous countries, with a thriving economy and a
+        high standard of living.
       </p>
 
       <br />
