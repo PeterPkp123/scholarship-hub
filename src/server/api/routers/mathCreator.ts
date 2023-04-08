@@ -4,6 +4,7 @@ import { getShuntingResponse } from "~/utils/shunting-yard";
 import { createMathTestSchema } from "~/pages/math/creator/create";
 import { Prisma } from "@prisma/client";
 import { ApiError } from "../errors/api-error";
+import { checkMathTestAnswerSchema } from "~/pages/math/creator/test/[id]/test";
 
 export const mathCreatorRouter = createTRPCRouter({
   createTest: publicProcedure
@@ -60,6 +61,26 @@ export const mathCreatorRouter = createTRPCRouter({
         where: { id: input.id },
         include: { questions: { include: { answers: true, graph: true } } },
       });
+    }),
+  getOneTestPractice: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.mathTest.findUnique({
+        where: { id: input.id },
+        include: { questions: { include: { graph: true } } },
+      });
+    }),
+  checkAnswer: publicProcedure
+    .input(checkMathTestAnswerSchema)
+    .mutation(async ({ ctx, input }) => {
+      const question = await ctx.prisma.mathQuestion.findUnique({
+        where: { id: input.questionId },
+        include: { answers: true },
+      });
+
+      if (!question) throw new ApiError("Nie znaleziono pytania", "answer");
+
+      return !!question.answers.find((a) => a.content === input.answer);
     }),
   deleteTest: publicProcedure
     .input(z.object({ id: z.string() }))
