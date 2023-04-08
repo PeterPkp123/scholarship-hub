@@ -3,11 +3,15 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { getShuntingResponse } from "~/utils/shunting-yard";
 import { createMathTestSchema } from "~/pages/math/creator/create";
 import { Prisma } from "@prisma/client";
+import { ApiError } from "../errors/api-error";
 
 export const mathCreatorRouter = createTRPCRouter({
   createTest: publicProcedure
     .input(createMathTestSchema)
     .mutation(async ({ ctx, input }) => {
+      if (input.questions.length === 0)
+        throw new ApiError("Musisz dodać przynajmniej jedno pytanie!", "name");
+
       const test = await ctx.prisma.mathTest.create({
         data: {
           name: input.name,
@@ -54,7 +58,7 @@ export const mathCreatorRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.mathTest.findUnique({
         where: { id: input.id },
-        include: { questions: true },
+        include: { questions: { include: { answers: true, graph: true } } },
       });
     }),
   deleteTest: publicProcedure

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Trash2 } from "lucide-react";
 import { type NextPage } from "next";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,7 +16,7 @@ import {
 import { InputWithText } from "~/components/ui/input";
 import { RouterInputs, api } from "~/utils/api";
 
-const truncate = (input: string, len: number) =>
+export const truncate = (input: string, len: number) =>
   input.length > len ? `${input.substring(0, len).trimEnd()}...` : input;
 
 type FormValues = RouterInputs["mathCreator"]["createTest"];
@@ -31,7 +32,9 @@ export const createMathTestSchema = z.object({
   ),
 });
 
-const Index: NextPage = () => {
+const Create: NextPage = () => {
+  const router = useRouter();
+
   const {
     mutateAsync: addTest,
     isLoading: isAddingTest,
@@ -70,6 +73,7 @@ const Index: NextPage = () => {
         onSubmit={handleSubmit(async (data) => {
           try {
             await addTest({ ...data, questions });
+            await router.push("/math/creator");
           } catch (e) {}
         })}
       >
@@ -214,4 +218,4 @@ const Index: NextPage = () => {
   );
 };
 
-export default Index;
+export default Create;

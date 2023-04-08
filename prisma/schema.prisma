@@ -91,7 +91,7 @@ model MathTest {
 model MathQuestion {
     id String @id @default(cuid())
 
-    content String
+    content String @db.LongText
 
     mathTest   MathTest     @relation(fields: [mathTestId], references: [id], onDelete: Cascade)
     mathTestId String
