@@ -61,7 +61,7 @@ const Pracice: NextPage = () => {
     try {
       const result = await mutateAsync({
         ...formData,
-        wordId: data?.words[currentIndex]?.id ?? "__WORD_ID__",
+        wordId: data?.words[currentIndex]?.id ?? "__MISSING_WORD_ID__",
       });
 
       if (result.currect) {
@@ -86,7 +86,7 @@ const Pracice: NextPage = () => {
       }
 
       if (currentIndex + 1 < (data?.words.length ?? 0)) {
-        setCurrentIndex(currentIndex + 1);
+        setCurrentIndex((c) => c + 1);
       } else {
         setResultDialogOpen(true);
       }

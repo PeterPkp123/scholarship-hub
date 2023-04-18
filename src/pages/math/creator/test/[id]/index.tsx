@@ -1,5 +1,5 @@
 import { Copy } from "lucide-react";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { z } from "zod";
 import AppLayout from "~/components/app-layout";
 import Loading from "~/components/loading";
@@ -26,11 +26,10 @@ const Index: NextPage = () => {
 
   const { id: testId } = useQueryParams({ id: z.string() });
 
-  const { data, isLoading, isError, refetch } =
-    api.mathCreator.getOneTest.useQuery(
-      { id: testId || "" },
-      { enabled: !!testId }
-    );
+  const { data, isLoading, isError } = api.mathCreator.getOneTest.useQuery(
+    { id: testId || "" },
+    { enabled: !!testId }
+  );
 
   return (
     <AppLayout
@@ -43,9 +42,11 @@ const Index: NextPage = () => {
               <Button
                 variant={"outline"}
                 className="flex items-center gap-2"
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${window.location.host}/math/creator/test/${testId}/test`
+                onClick={async () => {
+                  await navigator.clipboard.writeText(
+                    `${window.location.host}/math/creator/test/${
+                      testId ?? ""
+                    }/test`
                   );
 
                   toast({

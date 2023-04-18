@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { getShuntingResponse } from "~/utils/shunting-yard";
 import { createMathTestSchema } from "~/pages/math/creator/create";
-import { Prisma } from "@prisma/client";
+import { type Prisma } from "@prisma/client";
 import { ApiError } from "../errors/api-error";
 import { checkMathTestAnswerSchema } from "~/pages/math/creator/test/[id]/test";
 
@@ -40,7 +40,13 @@ export const mathCreatorRouter = createTRPCRouter({
         if (inputQ.graph) {
           const graphV = getShuntingResponse(inputQ.graph);
           const rpn = graphV.reversedPolishNotation.join(" ");
-          graph = { create: { infix: inputQ.graph, rpn } };
+          graph = {
+            create: {
+              infix: inputQ.graph,
+              rpn,
+              values: JSON.stringify(graphV.plotValues),
+            },
+          };
         }
 
         await ctx.prisma.mathQuestion.update({
@@ -67,7 +73,9 @@ export const mathCreatorRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.mathTest.findUnique({
         where: { id: input.id },
-        include: { questions: { include: { graph: true } } },
+        include: {
+          questions: { include: { graph: { select: { values: true } } } },
+        },
       });
     }),
   checkAnswer: publicProcedure
@@ -80,7 +88,14 @@ export const mathCreatorRouter = createTRPCRouter({
 
       if (!question) throw new ApiError("Nie znaleziono pytania", "answer");
 
-      return !!question.answers.find((a) => a.content === input.answer);
+      const correct = !!question.answers.find(
+        (a) => a.content === input.answer
+      );
+
+      return {
+        correct,
+        correctAnswer: question.answers[0]?.content ?? "",
+      };
     }),
   deleteTest: publicProcedure
     .input(z.object({ id: z.string() }))

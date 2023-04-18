@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { InputWithText } from "~/components/ui/input";
-import { RouterInputs, api } from "~/utils/api";
+import { type RouterInputs, api } from "~/utils/api";
 
 export const truncate = (input: string, len: number) =>
   input.length > len ? `${input.substring(0, len).trimEnd()}...` : input;
@@ -108,6 +108,7 @@ const Create: NextPage = () => {
                 <InputWithText
                   inputProps={{
                     onChange: (e) => setQuestionContent(e.target.value),
+                    textarea: true,
                   }}
                   label="Treść pytania"
                   error={formErrors.questions?.[0]?.content?.message}

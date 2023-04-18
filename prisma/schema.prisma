@@ -121,8 +121,9 @@ model MathAnswer {
 model MathGraph {
     id String @id @default(cuid())
 
-    infix String
-    rpn   String
+    infix  String
+    rpn    String
+    values String @db.LongText
 
     mathQuestion   MathQuestion @relation(fields: [mathQuestionId], references: [id], onDelete: Cascade)
     mathQuestionId String       @unique
